@@ -16,7 +16,8 @@ cmds = [
 
 [phases.migrate]
 cmds = [
-  "php artisan migrate --force"
+  "php artisan migrate --force",
+  "php artisan db:seed --force"
 ]
 
 [start]

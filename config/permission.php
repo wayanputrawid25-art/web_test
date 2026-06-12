@@ -12,6 +12,11 @@ return [
         'model_has_roles' => 'model_has_roles',
         'role_has_permissions' => 'role_has_permissions',
     ],
+    'column_names' => [
+        'pivotKey' => 'model_id',
+        'modelMorphKey' => 'model_id',
+        'teamForeignKey' => 'team_id',
+    ],
     'guard_name' => 'web',
     'enable_cache' => true,
 ];
