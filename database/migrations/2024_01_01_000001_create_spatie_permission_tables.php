@@ -9,7 +9,11 @@ return new class extends Migration
     public function up(): void
     {
         $tableNames = config('permission.table_names');
-        $columnNames = config('permission.column_names');
+        $columnNames = config('permission.column_names') ?? [
+            'pivotKey' => 'model_id',
+            'modelMorphKey' => 'model_id',
+            'teamForeignKey' => 'team_id',
+        ];
 
         if (empty($tableNames)) {
             throw new \Exception('Error: config/permission.php not loaded. Run [php artisan config:clear] and try again.');
