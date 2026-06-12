@@ -1,5 +1,6 @@
 <?php
 
+use App\Providers\ModuleServiceProvider;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -18,4 +19,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->shouldRenderJsonWhen(function ($request, \Throwable $e) {
             return $request->is('api/*') || $request->expectsJson();
         });
-    })->create();
+    })
+    ->withProviders([
+        ModuleServiceProvider::class,
+    ])
+    ->create();

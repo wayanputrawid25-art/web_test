@@ -10,33 +10,21 @@ class RoleSeeder extends Seeder
 {
     public function run(): void
     {
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+
         // Create roles
-        $superAdmin = Role::create(['name' => 'SuperAdmin']);
-        $warehouseAdmin = Role::create(['name' => 'WarehouseAdmin']);
-        $operator = Role::create(['name' => 'Operator']);
+        $superAdmin = Role::create(['name' => 'Super Admin', 'guard_name' => 'web']);
+        $admin = Role::create(['name' => 'Admin', 'guard_name' => 'web']);
+        $staff = Role::create(['name' => 'Staff', 'guard_name' => 'web']);
 
-        // Product permissions
-        $productPermissions = [
-            'view-products',
-            'create-products',
-            'edit-products',
-            'delete-products',
+        // Dashboard permissions
+        $dashboardPermissions = [
+            'view-dashboard',
+            'view-admin-dashboard',
         ];
 
-        foreach ($productPermissions as $permission) {
-            Permission::create(['name' => $permission]);
-        }
-
-        // Inventory permissions
-        $inventoryPermissions = [
-            'view-inventory',
-            'create-inventory',
-            'edit-inventory',
-            'delete-inventory',
-        ];
-
-        foreach ($inventoryPermissions as $permission) {
-            Permission::create(['name' => $permission]);
+        foreach ($dashboardPermissions as $permission) {
+            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
         }
 
         // User management permissions
@@ -45,102 +33,186 @@ class RoleSeeder extends Seeder
             'create-users',
             'edit-users',
             'delete-users',
+            'view-roles',
+            'create-roles',
+            'edit-roles',
+            'delete-roles',
+            'assign-roles',
         ];
 
         foreach ($userPermissions as $permission) {
-            Permission::create(['name' => $permission]);
+            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
         }
 
-        // Task Center permissions
-        $taskPermissions = [
-            'view-tasks',
-            'create-tasks',
-            'edit-tasks',
-            'delete-tasks',
+        // Product permissions
+        $productPermissions = [
+            'view-products',
+            'create-products',
+            'edit-products',
+            'delete-products',
+            'export-products',
         ];
 
-        foreach ($taskPermissions as $permission) {
-            Permission::create(['name' => $permission]);
+        foreach ($productPermissions as $permission) {
+            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
         }
 
-        // Stock Opname permissions
-        $stockOpnamePermissions = [
-            'view-stock-opnames',
-            'create-stock-opnames',
-            'edit-stock-opnames',
-            'delete-stock-opnames',
+        // Category permissions
+        $categoryPermissions = [
+            'view-categories',
+            'create-categories',
+            'edit-categories',
+            'delete-categories',
         ];
 
-        foreach ($stockOpnamePermissions as $permission) {
-            Permission::create(['name' => $permission]);
+        foreach ($categoryPermissions as $permission) {
+            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
         }
 
-        // Approval permissions
-        $approvalPermissions = [
-            'view-approvals',
-            'create-approvals',
-            'edit-approvals',
-            'delete-approvals',
+        // Supplier permissions
+        $supplierPermissions = [
+            'view-suppliers',
+            'create-suppliers',
+            'edit-suppliers',
+            'delete-suppliers',
         ];
 
-        foreach ($approvalPermissions as $permission) {
-            Permission::create(['name' => $permission]);
+        foreach ($supplierPermissions as $permission) {
+            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
         }
 
-        // Dashboard permissions
-        $dashboardPermissions = [
-            'access-admin-dashboard',
+        // Stock In permissions
+        $stockInPermissions = [
+            'view-stock-in',
+            'create-stock-in',
+            'edit-stock-in',
+            'delete-stock-in',
+            'approve-stock-in',
+            'receive-stock-in',
         ];
 
-        foreach ($dashboardPermissions as $permission) {
-            Permission::create(['name' => $permission]);
+        foreach ($stockInPermissions as $permission) {
+            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
         }
 
-        // SuperAdmin: full access
+        // Stock Out permissions
+        $stockOutPermissions = [
+            'view-stock-out',
+            'create-stock-out',
+            'edit-stock-out',
+            'delete-stock-out',
+            'approve-stock-out',
+            'dispatch-stock-out',
+        ];
+
+        foreach ($stockOutPermissions as $permission) {
+            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
+        }
+
+        // Inventory permissions
+        $inventoryPermissions = [
+            'view-inventory',
+            'manage-inventory',
+            'adjust-stock',
+            'view-stock-ledger',
+        ];
+
+        foreach ($inventoryPermissions as $permission) {
+            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
+        }
+
+        // Report permissions
+        $reportPermissions = [
+            'view-reports',
+            'export-reports',
+            'view-stock-report',
+            'view-movement-report',
+            'view-valuation-report',
+        ];
+
+        foreach ($reportPermissions as $permission) {
+            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
+        }
+
+        // Settings permissions
+        $settingsPermissions = [
+            'manage-settings',
+            'view-activity-log',
+        ];
+
+        foreach ($settingsPermissions as $permission) {
+            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
+        }
+
+        // Super Admin: full access
         $superAdmin->givePermissionTo(Permission::all());
 
-        // WarehouseAdmin: operational access (NOT user management)
-        $warehouseAdmin->givePermissionTo([
+        // Admin: operational access (NOT user/role management)
+        $admin->givePermissionTo([
+            // Dashboard
+            'view-dashboard',
+            'view-admin-dashboard',
             // Products
             'view-products',
             'create-products',
             'edit-products',
+            'export-products',
+            // Categories
+            'view-categories',
+            'create-categories',
+            'edit-categories',
+            // Suppliers
+            'view-suppliers',
+            'create-suppliers',
+            'edit-suppliers',
+            // Stock In
+            'view-stock-in',
+            'create-stock-in',
+            'edit-stock-in',
+            'approve-stock-in',
+            'receive-stock-in',
+            // Stock Out
+            'view-stock-out',
+            'create-stock-out',
+            'edit-stock-out',
+            'approve-stock-out',
+            'dispatch-stock-out',
             // Inventory
             'view-inventory',
-            'create-inventory',
-            'edit-inventory',
-            // Tasks
-            'view-tasks',
-            'create-tasks',
-            'edit-tasks',
-            // Stock Opnames
-            'view-stock-opnames',
-            'create-stock-opnames',
-            'edit-stock-opnames',
-            // Approvals - can approve
-            'view-approvals',
-            'create-approvals',
-            'edit-approvals',
-            // Dashboard
-            'access-admin-dashboard',
+            'manage-inventory',
+            'adjust-stock',
+            'view-stock-ledger',
+            // Reports
+            'view-reports',
+            'export-reports',
+            'view-stock-report',
+            'view-movement-report',
+            'view-valuation-report',
         ]);
 
-        // Operator: limited access
-        $operator->givePermissionTo([
+        // Staff: limited access
+        $staff->givePermissionTo([
+            // Dashboard
+            'view-dashboard',
             // Products
             'view-products',
+            // Categories
+            'view-categories',
+            // Suppliers
+            'view-suppliers',
+            // Stock In
+            'view-stock-in',
+            'create-stock-in',
+            // Stock Out
+            'view-stock-out',
+            'create-stock-out',
             // Inventory
             'view-inventory',
-            // Tasks
-            'view-tasks',
-            'create-tasks',
-            'edit-tasks',
-            // Stock Opnames - can view and count
-            'view-stock-opnames',
-            'edit-stock-opnames',
-            // Approvals - can only create requests
-            'view-approvals',
-            'create-approvals',
+            'view-stock-ledger',
+            // Reports
+            'view-reports',
+            'view-stock-report',
+            'view-movement-report',
         ]);
     }
 }
