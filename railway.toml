@@ -1,0 +1,2 @@
+[deploy]
+buildCommand = "composer install --no-dev && mkdir -p bootstrap/cache && php artisan vendor:publish --provider=\"Spatie\\Permission\\PermissionServiceProvider\" --tag=config --force && php artisan migrate --force"
